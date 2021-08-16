@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Breastfeeding Assistant</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="Last_breastfeeding_side_a11y">Last breastfeeding side</string>
+
 </resources>

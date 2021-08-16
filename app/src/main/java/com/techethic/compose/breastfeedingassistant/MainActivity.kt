@@ -7,8 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.whenResumed
+import com.techethic.compose.breastfeedingassistant.ui.BreastFeedTracker
 import com.techethic.compose.dailycounter.theme.TestTheme
-import com.techethic.compose.dailycounter.ui.DailyCounter
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -23,8 +24,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                mainViewModel.retrieveCurrentCounter()
+            lifecycle.whenResumed {
+                mainViewModel.retrieveBreastFeedingInfo()
             }
         }
         setContent {
@@ -39,5 +40,5 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainApp(mainViewModel: MainViewModel){
-    DailyCounter(mainViewModel)
+    BreastFeedTracker(mainViewModel)
 }

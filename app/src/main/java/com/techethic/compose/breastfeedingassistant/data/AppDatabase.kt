@@ -2,8 +2,11 @@ package com.techethic.compose.breastfeedingassistant.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
-@Database(entities = [Counter::class], version = 2, exportSchema = false)
+@Database(entities = [BreastFeeding::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
+
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun counterDao(): CounterDao
+    abstract fun breastFeedingDao(): BreastFeedingDao
 }

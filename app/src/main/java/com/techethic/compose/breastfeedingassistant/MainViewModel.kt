@@ -1,47 +1,47 @@
 package com.techethic.compose.breastfeedingassistant
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.techethic.compose.dailycounter.data.Counter
-import com.techethic.compose.dailycounter.data.CounterDao
-import com.techethic.compose.dailycounter.tools.DateCustomFormatter.formatDateForQuery
+import com.techethic.compose.breastfeedingassistant.data.BreastfeedingSide
+import com.techethic.compose.breastfeedingassistant.data.BreastFeedingDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
+import java.time.Duration
 import java.time.Instant
-import java.util.*
+import java.time.temporal.ChronoUnit
 
-class MainViewModel(private val counterDao: CounterDao) : ViewModel() {
+class MainViewModel(private val breastFeedingDao: BreastFeedingDao) : ViewModel() {
 
-    private val _currentCounter : MutableStateFlow<Counter?> = MutableStateFlow(null)
-    val currentCounter : StateFlow<Counter?> = _currentCounter
-    fun retrieveCurrentCounter(){
+    private val _leftCount : MutableStateFlow<Int> = MutableStateFlow(0)
+    private val _rightCount : MutableStateFlow<Int> = MutableStateFlow(0)
+    private val _lastBreastfeedingSide : MutableStateFlow<BreastfeedingSide?> = MutableStateFlow(null)
+    private val _timeSinceLastBreastFeeding : MutableStateFlow<Duration> = MutableStateFlow(Duration.ZERO)
+
+    val leftCount : StateFlow<Int> = _leftCount
+    val rightCount : StateFlow<Int> = _rightCount
+    val lastBreastfeedingSide : StateFlow<BreastfeedingSide?> = _lastBreastfeedingSide
+    val timeSinceLastBreastFeeding : StateFlow<Duration> = _timeSinceLastBreastFeeding
+
+
+    fun retrieveBreastFeedingInfo(){
         viewModelScope.launch {
-            val nowDate = "20210807" //formatDateForQuery(Date.from(Instant.now()))
-            counterDao.findCounterAtDate(nowDate).collect { counterInDb ->
-                if(counterInDb == null){
-                    val newCounter = Counter(count = 0, date = nowDate)
-                    counterDao.insert(newCounter)
-                    _currentCounter.emit(newCounter)
-                    Log.d("Fanny","emit NEW counter $newCounter")
-                } else {
-                    _currentCounter.emit(counterInDb)
-                    Log.d("Fanny","emit counter in DB $counterInDb")
 
-                }
-            }
+            _leftCount.emit(2)
+            _rightCount.emit(3)
+            _lastBreastfeedingSide.emit(BreastfeedingSide.RIGHT)
+
+            val duration = Duration.between(
+                Instant.now()
+                    .minus(3, ChronoUnit.HOURS)
+                    .plus(22, ChronoUnit.MINUTES).plus(2,ChronoUnit.SECONDS),
+                Instant.now()
+            )
+
+            _timeSinceLastBreastFeeding.emit(duration)
         }
-
     }
 
-    fun retrieveAllCounter() = counterDao.getAll()
-
-    fun updateCounter(counter: Counter){
-        viewModelScope.launch {
-            counterDao.update(counter)
-        }
+    fun breastFeedingStarted(breastfeedingSide: BreastfeedingSide) {
     }
 }

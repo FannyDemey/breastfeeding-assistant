@@ -4,7 +4,7 @@ import androidx.room.Room
 import com.techethic.compose.breastfeedingassistant.Application
 import com.techethic.compose.breastfeedingassistant.MainViewModel
 import com.techethic.compose.breastfeedingassistant.data.AppDatabase
-import com.techethic.compose.breastfeedingassistant.data.CounterDao
+import com.techethic.compose.breastfeedingassistant.data.BreastFeedingDao
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -19,8 +19,8 @@ val appModule = module {
             .build()
     }
 
-    fun provideCounterDao(database: AppDatabase): CounterDao {
-        return  database.counterDao()
+    fun provideCounterDao(database: AppDatabase): BreastFeedingDao {
+        return  database.breastFeedingDao()
     }
 
     single { provideDatabase(androidApplication() as Application) }

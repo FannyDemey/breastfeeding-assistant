@@ -5,11 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.wear.compose.material.Colors
 import androidx.wear.compose.material.MaterialTheme
+import com.techethic.compose.breastfeedingassistant.theme.*
 
 private val ColorPalette = Colors(
     primary = Primary,
     primaryVariant = PrimaryVariant,
     secondary = Secondary,
+    secondaryVariant = SecondaryVariant,
     onPrimary = Color.White,
     onSecondary = Color.Black,
     /* Other default colors to override
