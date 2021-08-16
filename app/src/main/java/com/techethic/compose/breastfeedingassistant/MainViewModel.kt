@@ -2,14 +2,18 @@ package com.techethic.compose.breastfeedingassistant
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.techethic.compose.breastfeedingassistant.data.BreastFeeding
 import com.techethic.compose.breastfeedingassistant.data.BreastfeedingSide
 import com.techethic.compose.breastfeedingassistant.data.BreastFeedingDao
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 class MainViewModel(private val breastFeedingDao: BreastFeedingDao) : ViewModel() {
 
@@ -26,22 +30,56 @@ class MainViewModel(private val breastFeedingDao: BreastFeedingDao) : ViewModel(
 
     fun retrieveBreastFeedingInfo(){
         viewModelScope.launch {
+            val nowDate = formatDate(Date.from(Instant.now()))
 
-            _leftCount.emit(2)
-            _rightCount.emit(3)
-            _lastBreastfeedingSide.emit(BreastfeedingSide.RIGHT)
+            //LEFT AND RIGHT COUNT
+            breastFeedingDao.getFeedingsForDate(nowDate).collect { feedingList ->
+                if(feedingList.isNotEmpty()){
+                    val leftCount = feedingList.count {
+                        it.breastfeedingSide == BreastfeedingSide.LEFT
+                    }
+                    val rightCount = feedingList.count {
+                        it.breastfeedingSide == BreastfeedingSide.RIGHT
+                    }
+                    _leftCount.emit(leftCount)
+                    _rightCount.emit(rightCount)
 
-            val duration = Duration.between(
-                Instant.now()
-                    .minus(3, ChronoUnit.HOURS)
-                    .plus(22, ChronoUnit.MINUTES).plus(2,ChronoUnit.SECONDS),
-                Instant.now()
-            )
+                    feedingList.first().let { lastFeeding ->
+                        val duration = Duration.between(
+                            lastFeeding.end,
+                            Instant.now()
+                        )
+                        _timeSinceLastBreastFeeding.emit(duration)
+                        _lastBreastfeedingSide.emit(lastFeeding.breastfeedingSide)
+                    }
+                } else {
+                    //TODO retrieve previous feeding side and time ?
+                }
 
-            _timeSinceLastBreastFeeding.emit(duration)
+
+            }
+
         }
     }
 
     fun breastFeedingStarted(breastfeedingSide: BreastfeedingSide) {
+        viewModelScope.launch {
+            breastFeedingDao.insert(
+                BreastFeeding(
+                    breastfeedingSide = breastfeedingSide,
+                    date = formatDate(Date.from(Instant.now())),
+                    start = Instant.now(),
+                    end = Instant.now())
+            )
+        }
+
+    }
+
+
+    private val DATE_IN_DB_PATTERN = "yyyyMMdd"
+
+    private fun formatDate(date : Date) : String{
+        val simpleDateFormater = SimpleDateFormat(DATE_IN_DB_PATTERN, Locale.ENGLISH)
+        return simpleDateFormater.format(date)
     }
 }
