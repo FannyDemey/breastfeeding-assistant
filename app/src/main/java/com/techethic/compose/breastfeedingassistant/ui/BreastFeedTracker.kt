@@ -1,5 +1,6 @@
 package com.techethic.compose.breastfeedingassistant.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
@@ -44,11 +46,34 @@ fun BreastFeedTracker(mainViewModel: MainViewModel) {
             contentDescription = "Feeding tracker app")
         Text(text = "Today",
             style = MaterialTheme.typography.title2,
-            color = Color.White)
+            color = MaterialTheme.colors.secondaryVariant)
         //Breast Counters
-        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-            BreastCounter(leftCount, BreastfeedingSide.LEFT, lastBreastSide, mainViewModel)
-            BreastCounter(rightCount, BreastfeedingSide.RIGHT,lastBreastSide, mainViewModel)
+        ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
+            val guideline = createGuidelineFromAbsoluteLeft(0.5f)
+            val (left, right) = createRefs()
+            BreastCounter(leftCount,
+                BreastfeedingSide.LEFT,
+                lastBreastSide,
+                modifier = Modifier.constrainAs(left){
+                    top.linkTo(parent.top)
+                    start.linkTo(parent.start)
+                    end.linkTo(guideline)
+                }) {
+                mainViewModel.breastFeedingStarted(BreastfeedingSide.LEFT)
+            }
+            BreastCounter(rightCount,
+                BreastfeedingSide.RIGHT,
+                lastBreastSide,
+                modifier = Modifier.constrainAs(right){
+                    top.linkTo(parent.top)
+                    start.linkTo(guideline)
+                    end.linkTo(parent.end)
+            }) {
+                mainViewModel.breastFeedingStarted(BreastfeedingSide.RIGHT)
+            }
+        }
+        Row(horizontalArrangement = Arrangement.Center) {
+
         }
         Text(text = "Feeding counts",
             style = MaterialTheme.typography.body2,

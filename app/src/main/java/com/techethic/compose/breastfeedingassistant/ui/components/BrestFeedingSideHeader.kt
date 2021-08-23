@@ -1,11 +1,11 @@
 package com.techethic.compose.breastfeedingassistant.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -38,18 +38,18 @@ fun BrestFeedingSideHeader(
                     absoluteRight.linkTo(parent.absoluteRight)
                 })
             lastBreastfeedingSide?.let {
-                if (breastfeedingSide == it) {
-                    Icon(painter = painterResource(id = R.drawable.ic_last_breastfeeding),
-                        tint = MaterialTheme.colors.secondary,
-                        contentDescription = stringResource(R.string.Last_breastfeeding_side_a11y),
-                        modifier = Modifier
-                            .scale(0.5f)
-                            .constrainAs(lastSideIcon) {
-                                top.linkTo(text.top)
-                                bottom.linkTo(text.bottom)
-                                absoluteLeft.linkTo(text.absoluteRight)
-                            })
-                }
+                Icon(painter = painterResource(id = R.drawable.ic_last_breastfeeding),
+                    tint = MaterialTheme.colors.secondary,
+                    contentDescription = if(breastfeedingSide == it) {stringResource(R.string.Last_breastfeeding_side_a11y)} else null,
+                    modifier = Modifier
+                        .alpha(if(breastfeedingSide == it) { 1f } else 0f)
+                        .scale(0.6f)
+                        .constrainAs(lastSideIcon) {
+                            top.linkTo(text.top)
+                            bottom.linkTo(text.bottom)
+                            absoluteLeft.linkTo(text.absoluteRight)
+                        })
+
             }
         }
     }

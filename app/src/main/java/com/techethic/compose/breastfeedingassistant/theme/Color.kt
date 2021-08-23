@@ -2,11 +2,11 @@ package com.techethic.compose.breastfeedingassistant.theme
 
 import androidx.compose.ui.graphics.Color
 
-// https://coolors.co/390099-9e0059-ff0054-ff5400-ffbd00
-val Primary = Color(0xFFff5400)
-val Secondary =  Color(0xFFffbd00)
-val PrimaryVariant = Color(0xFFff0054)
-val SecondaryVariant = Color(0xFF9e0059)
+// https://coolors.co/f72585-7209b7-3a0ca3-4361ee-4cc9f0
+val Primary = Color(0xFF7209b7)
+val Secondary =  Color(0xFF4361ee)
+val PrimaryVariant = Color(0xFFf72585)
+val SecondaryVariant = Color(0xFF4cc9f0)
 
 
 val gray = Color(0xFFA4A4A4)
